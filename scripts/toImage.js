@@ -24,6 +24,8 @@ const getCostumes = async () => {
 const main = async () => {
   Clone.ctx = getCanvas().ctx;
   const costumes = await getCostumes();
+
+  const background = new Clone(costumes.background);
   const box = new Clone(costumes.box);
   
   while (true) {
