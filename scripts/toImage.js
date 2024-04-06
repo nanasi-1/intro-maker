@@ -1,4 +1,5 @@
 import { sleep } from "./util.js";
+import { Clone } from "./Clone.js";
 console.log('Hello World!');
 
 const getCanvas = () => {
@@ -21,16 +22,20 @@ const getCostumes = async () => {
 }
 
 const main = async () => {
-  const {ctx} = getCanvas();
-  const {box, background} = await getCostumes();
+  Clone.ctx = getCanvas().ctx;
+  const costumes = await getCostumes();
+  const box = new Clone(costumes.box);
   
-  for (let x = 600; x > 0; x -= (x + 8) / 12) {
-    ctx.clearRect(0, 0, 1000, 1000);
-    ctx.drawImage(background, 0, 0);
-    ctx.drawImage(box, x, 0);
-    await sleep(30);
+  while (true) {
+    box.toX(0);
+    for (let x = 50; x > 0; x--) {
+      box.moveX(x / 2);
+      console.log(x)
+      await sleep(30);
+    }
+    console.log('draw');
+    await sleep(100);
   }
-  console.log('draw');
 };
 
 try {
