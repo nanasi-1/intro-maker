@@ -1,3 +1,4 @@
+import { sleep } from "./util.js";
 console.log('Hello World!');
 
 const getCanvas = () => {
@@ -36,8 +37,4 @@ try {
   main();
 } catch (e) {
   console.error('エラーが発生しました', e);
-}
-
-async function sleep(sec) { 
-  return new Promise(resolve => setTimeout(resolve, sec)); 
 }
