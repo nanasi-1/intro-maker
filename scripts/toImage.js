@@ -11,27 +11,32 @@ const getCanvas = () => {
 
 const getCostumes = async () => {
   const costumeElem = document.getElementById('costume');
-  /** @type {{[key: string]: HTMLImageElement}} */ const costumes = {};
+  /** @type {{[key: string]: HTMLElement}} */ const costumes = {};
   for (const elem of costumeElem.children) {
-    const img = new Image();
-    img.src = await domtoimage.toSvg(elem);
-    costumes[elem.id] = img;
+    costumes[elem.id] = elem;
   }
-  costumeElem.remove();
   return costumes;
 }
 
 const main = async () => {
   const {ctx, canvas} = getCanvas();
   const sprite = new Sprite(canvas, ctx);
-  const circleElem = document.getElementById('circle');
 
   const costumes = await getCostumes();
   const background = sprite.add(costumes.background);
   const box = sprite.add(costumes.box);
-  const circle = sprite.addFromElement(circleElem);
+  const circle = sprite.add(costumes.circle);
+
+  document.getElementById('costume').remove();
   
   while (true) {
+    for (let i = 0; i < 50; i++) {
+      const size = i / 100;
+      circle.writeStyle('transform', `scale(${size})`);
+      circle.moveX(-1);
+      await sleep(30);
+    }
+
     for (let x = 30; x > 0 && box.coordinate.x < canvas.width - 100; x--) {
       box.moveX(x * 1.55);
       await sleep(30);
@@ -55,8 +60,6 @@ const main = async () => {
       await sleep(30);
     }
     box.toY(0);
-
-    circle.writeStyle('transform', 'scale(1.1)')
   }
 };
 

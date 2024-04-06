@@ -4,10 +4,16 @@ export default class Sprite {
   canvas;
   ctx;
 
+  /**
+   * スプライト=クローンの管理係
+   * @param {HTMLCanvasElement} canvas 描画するキャンバス
+   * @param {CanvasRenderingContext2D} ctx キャンバスのctx
+   */
   constructor (canvas, ctx) {
     if(Sprite.alreadyCreate) throw new Error('スプライトは一つまでです。すみません。');
     Sprite.alreadyCreate = true;
     this.canvas = canvas;
+    ctx.translate(canvas.width / 2, canvas.height / 2);
     this.ctx = ctx;
   }
 
@@ -17,32 +23,56 @@ export default class Sprite {
     return clone;
   }
 
-  addFromElement(elem) {
-    const clone = new CloneFromElement(elem, this);
-    this.clones.push(clone);
-    return clone;
-  }
-
   _render() {
-    this.ctx.clearRect(0, 0, 1000, 1000);
+    this.ctx.clearRect(-(this.canvas.width / 2), -(this.canvas.height / 2), 10000, 10000);
     for (const clone of this.clones) {
       clone._render(this.ctx);
+
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
     }
   }
 }
 
 export class Clone {
-  img;
-  coordinate = {x: 0, y: 0};
-  sprite;
+  coordinate = {
+    x: 0, 
+    y: 0,
+    size: 100
+  };
+  #img = null;
+  #sprite;
+  #elem;
+  #isUpdateImage = false;
+  #size = {
+    w: 0,
+    h: 0,
+  }
 
   /**
-   * @param {CanvasImageSource} costume 
+   * @param {HTMLElement} elem 
    * @param {Sprite} sprite 
    */
-  constructor (costume, sprite) {
-    this.img = costume;
-    this.sprite = sprite;
+  constructor (elem, sprite) {
+    this.#sprite = sprite;
+    this.#elem = elem;
+    this.#size.w = elem.clientWidth;
+    this.#size.h = elem.clientHeight;
+    console.log(this.#size);
+  }
+
+  /** 現在の座標をもとに描画 */
+  async _render(ctx) {
+    if(!this.#isUpdateImage) await this.#updateImage();
+    ctx.drawImage(this.#img, this.coordinate.x - this.#size.w / 2, this.coordinate.y - this.#size.h / 2);
+  }
+
+  /** 画像を更新 */
+  async #updateImage() {
+    const img = new Image();
+    img.src = await domtoimage.toSvg(this.#elem);
+    this.#img = img;
+    this.#isUpdateImage = true;
   }
 
   /**
@@ -50,7 +80,7 @@ export class Clone {
    * @param {(costume: CanvasImageSource, ctx: CanvasRenderingContext2D) => Promise<void>} block 
    */
   async program (block) {
-    await block(this.img, this.ctx);
+    await block(this.#img, this.ctx);
   }
 
   moveX(x) {
@@ -69,49 +99,24 @@ export class Clone {
     this.#move('y', y);
   }
 
+  to(x, y) {
+    this.#move('x', x);
+    this.#move('y', y);
+  }
+
   #move(prop, value) {
     this.coordinate[prop] = value;
-    this.sprite._render();
-  }
-
-  /** 現在の座標をもとに描画 */
-  _render(ctx) {
-    ctx.drawImage(this.img, this.coordinate.x, this.coordinate.y);
-  }
-}
-
-export class CloneFromElement extends Clone {
-  #elem;
-  #isUpdateImage = false;
-
-  /**
-   * @param {HTMLElement} elem 
-   * @param {Sprite} sprite 
-   */
-  constructor(elem, sprite) {
-    super(null, sprite);
-    this.#elem = elem;
+    this.#sprite._render();
   }
 
   /**
-   * スタイルを変更
+   * スタイルを変更する、別に使わなければいいことに気づいた
    * @param {keyof CSSStyleDeclaration} prop 
    * @param {*} value 
    */
   writeStyle(prop, value) {
     this.#elem.style[prop] = value;
     this.#isUpdateImage = false;
-  }
-
-  async _render(ctx) {
-    if(!this.#isUpdateImage) await this.#updateImage();
-    ctx.drawImage(this.img, this.coordinate.x, this.coordinate.y);
-  }
-
-  async #updateImage() {
-    const img = new Image();
-    img.src = await domtoimage.toSvg(this.#elem);
-    this.img = img;
-    this.#isUpdateImage = true;
+    this.#sprite._render();
   }
 }
