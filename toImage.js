@@ -9,11 +9,11 @@ const getCanvas = () => {
 
 const getCostumes = async () => {
   const costumeElem = document.getElementById('costume');
-  const costumes = [];
+  /** @type {{[key: string]: HTMLImageElement}} */ const costumes = {};
   for (const elem of costumeElem.children) {
     const img = new Image();
     img.src = await domtoimage.toSvg(elem);
-    costumes.push(img);
+    costumes[elem.id] = img;
   }
   costumeElem.remove();
   return costumes;
@@ -21,11 +21,11 @@ const getCostumes = async () => {
 
 const main = async () => {
   const {ctx} = getCanvas();
-  const costumes = await getCostumes();
-  for (const costume of costumes) {
-    console.log('draw', costume);
-    ctx.drawImage(costume, 0, 0);
-  }
+  const {head, append} = await getCostumes();
+  
+  ctx.drawImage(head, 0, 0);
+  ctx.drawImage(append, 0, 100);
+  console.log('draw');
 };
 
 try {
