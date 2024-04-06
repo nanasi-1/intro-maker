@@ -29,6 +29,14 @@ export class Clone {
     this.#move('x', x);
   }
 
+  moveY(y) {
+    this.#move('y', this.coordinate.y + y);
+  }
+
+  toY(y) {
+    this.#move('y', y);
+  }
+
   #move(prop, value) {
     this.coordinate[prop] = value;
     Clone.render();
