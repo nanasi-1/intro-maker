@@ -1,16 +1,48 @@
+export default class Sprite {
+  static alreadyCreate = false;
+  clones = [];
+  canvas;
+  ctx;
+
+  constructor (canvas, ctx) {
+    if(Sprite.alreadyCreate) throw new Error('スプライトは一つまでです。すみません。');
+    Sprite.alreadyCreate = true;
+    this.canvas = canvas;
+    this.ctx = ctx;
+  }
+
+  add(img) {
+    const clone = new Clone(img, this);
+    this.clones.push(clone);
+    return clone;
+  }
+
+  addFromElement(elem) {
+    const clone = new CloneFromElement(elem, this);
+    this.clones.push(clone);
+    return clone;
+  }
+
+  _render() {
+    this.ctx.clearRect(0, 0, 1000, 1000);
+    for (const clone of this.clones) {
+      clone._render(this.ctx);
+    }
+  }
+}
+
 export class Clone {
   costume;
   coordinate = {x: 0, y: 0};
-  /** @type {Clone[]} */ static clones = [];
-  /** @type {CanvasRenderingContext2D} */ static ctx;
+  sprite;
 
   /**
    * @param {CanvasImageSource} costume 
-   * @param {CanvasRenderingContext2D} ctx 
+   * @param {Sprite} sprite 
    */
-  constructor (costume, ctx) {
+  constructor (costume, sprite) {
     this.costume = costume;
-    Clone.clones.push(this);
+    this.sprite = sprite;
   }
 
   /**
@@ -39,18 +71,13 @@ export class Clone {
 
   #move(prop, value) {
     this.coordinate[prop] = value;
-    Clone.render();
+    this.sprite._render();
   }
 
   /** 現在の座標をもとに描画 */
   _render(ctx) {
     ctx.drawImage(this.costume, this.coordinate.x, this.coordinate.y);
   }
-
-  static render() {
-    this.ctx.clearRect(0, 0, 1000, 1000);
-    for (const clone of Clone.clones) {
-      clone._render(this.ctx);
-    }
-  }
 }
+
+export class CloneFromElement extends Clone {}
