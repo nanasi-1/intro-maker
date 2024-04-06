@@ -21,10 +21,14 @@ const getCostumes = async () => {
 
 const main = async () => {
   const {ctx} = getCanvas();
-  const {head, append} = await getCostumes();
+  const {box, background} = await getCostumes();
   
-  ctx.drawImage(head, 0, 0);
-  ctx.drawImage(append, 0, 100);
+  for (let x = 600; x > 0; x -= (x + 8) / 12) {
+    ctx.clearRect(0, 0, 1000, 1000);
+    ctx.drawImage(background, 0, 0);
+    ctx.drawImage(box, x, 0);
+    await sleep(30);
+  }
   console.log('draw');
 };
 
@@ -32,4 +36,8 @@ try {
   main();
 } catch (e) {
   console.error('エラーが発生しました', e);
+}
+
+async function sleep(sec) { 
+  return new Promise(resolve => setTimeout(resolve, sec)); 
 }
