@@ -32,7 +32,7 @@ export default class Sprite {
 }
 
 export class Clone {
-  costume;
+  img;
   coordinate = {x: 0, y: 0};
   sprite;
 
@@ -41,7 +41,7 @@ export class Clone {
    * @param {Sprite} sprite 
    */
   constructor (costume, sprite) {
-    this.costume = costume;
+    this.img = costume;
     this.sprite = sprite;
   }
 
@@ -50,7 +50,7 @@ export class Clone {
    * @param {(costume: CanvasImageSource, ctx: CanvasRenderingContext2D) => Promise<void>} block 
    */
   async program (block) {
-    await block(this.costume, this.ctx);
+    await block(this.img, this.ctx);
   }
 
   moveX(x) {
@@ -76,8 +76,42 @@ export class Clone {
 
   /** 現在の座標をもとに描画 */
   _render(ctx) {
-    ctx.drawImage(this.costume, this.coordinate.x, this.coordinate.y);
+    ctx.drawImage(this.img, this.coordinate.x, this.coordinate.y);
   }
 }
 
-export class CloneFromElement extends Clone {}
+export class CloneFromElement extends Clone {
+  #elem;
+  #isUpdateImage = false;
+
+  /**
+   * @param {HTMLElement} elem 
+   * @param {Sprite} sprite 
+   */
+  constructor(elem, sprite) {
+    super(null, sprite);
+    this.#elem = elem;
+  }
+
+  /**
+   * スタイルを変更
+   * @param {keyof CSSStyleDeclaration} prop 
+   * @param {*} value 
+   */
+  writeStyle(prop, value) {
+    this.#elem.style[prop] = value;
+    this.#isUpdateImage = false;
+  }
+
+  async _render(ctx) {
+    if(!this.#isUpdateImage) await this.#updateImage();
+    ctx.drawImage(this.img, this.coordinate.x, this.coordinate.y);
+  }
+
+  async #updateImage() {
+    const img = new Image();
+    img.src = await domtoimage.toSvg(this.#elem);
+    this.img = img;
+    this.#isUpdateImage = true;
+  }
+}

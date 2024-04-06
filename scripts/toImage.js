@@ -24,10 +24,12 @@ const getCostumes = async () => {
 const main = async () => {
   const {ctx, canvas} = getCanvas();
   const sprite = new Sprite(canvas, ctx);
-  const costumes = await getCostumes();
+  const circleElem = document.getElementById('circle');
 
+  const costumes = await getCostumes();
   const background = sprite.add(costumes.background);
   const box = sprite.add(costumes.box);
+  const circle = sprite.addFromElement(circleElem);
   
   while (true) {
     for (let x = 30; x > 0 && box.coordinate.x < canvas.width - 100; x--) {
@@ -53,6 +55,8 @@ const main = async () => {
       await sleep(30);
     }
     box.toY(0);
+
+    circle.writeStyle('transform', 'scale(1.1)')
   }
 };
 
