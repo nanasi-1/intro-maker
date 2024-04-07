@@ -23,11 +23,12 @@ export default class Sprite {
   clone(img) {
     const clone = new Clone(img, this);
     this.#clones.push(clone);
+    this._render();
     return clone;
   }
 
   _render() {
-    this.ctx.clearRect(-(this.canvas.width / 2), -(this.canvas.height / 2), 10000, 10000);
+    this.ctx.clearRect(-this.canvas.width * 2, -this.canvas.height * 2, this.canvas.width * 4, this.canvas.height * 4);
     for (const clone of this.#clones) {
       clone._render(this.ctx);
     }

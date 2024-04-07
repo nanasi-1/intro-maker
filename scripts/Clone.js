@@ -8,7 +8,8 @@ export default class Clone {
   #current = {
     x: 0, 
     y: 0,
-    size: 100
+    size: 100,
+    deg: 45
   };
   #isUpdateImage = false;
   #size = {
@@ -33,7 +34,9 @@ export default class Clone {
    */
   async _render(ctx) {
     if(!this.#isUpdateImage) await this.#updateImage();
+    ctx.save();
     const radio = this.#current.size / 100;
+    ctx.rotate(Math.PI / 180 * (this.#current.deg - 90));
     ctx.drawImage(
       this.#img, 
       this.#current.x - this.#size.w * radio / 2, 
@@ -41,6 +44,7 @@ export default class Clone {
       this.#sprite.canvas.width * radio,
       this.#sprite.canvas.height * radio
     );
+    ctx.restore();
   }
 
   /** 画像を更新 */
