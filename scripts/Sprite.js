@@ -32,4 +32,35 @@ export default class Sprite {
       clone._render(this.ctx);
     }
   }
+
+  changeLayer(clone, count) {
+    if(!this.#clones.includes(clone)) throw new Error('クローンが見つかりませんでした');
+    const index = this.#clones.indexOf(clone); // クローンが何番目か
+    this.#clones.splice(index, 1)[0]; // 取り除く
+    this.#clones.splice(index + count, 0, clone);
+    this._render();
+  }
+
+  /**
+   * 最前面or最背面に移動する
+   * @param {Clone} clone 移動するクローン
+   * @param {'front' | 'back'} mode 最前面 or 最背面
+   */
+  goToLayer(clone, mode) {
+    if(!this.#clones.includes(clone)) throw new Error('クローンが見つかりませんでした');
+    const index = this.#clones.indexOf(clone);
+    this.#clones.splice(index, 1)[0]; // 取り除く
+
+    switch (mode) {
+      case 'front':
+        this.#clones.push(clone);
+        break;
+      case 'back':
+        this.#clones.unshift(clone);
+        break;
+      default:
+        throw new Error('modeはfrontかbackにしてください');
+    }
+    this._render();
+  }
 }

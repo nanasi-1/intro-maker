@@ -16,13 +16,15 @@ const main = async () => {
   const sprite = new Sprite(canvas);
 
   const costumes = await getCostumes();
-  const background = sprite.clone(costumes.background);
   const box = sprite.clone(costumes.box);
   const circle = sprite.clone(costumes.circle);
+  const background = sprite.clone(costumes.background);
   document.getElementById('costume').remove();
 
   // 事前準備
   circle.setSize(100000);
+  sprite.changeLayer(box, 1); // 一つ手前にずらす
+  sprite.goToLayer(background, 'back'); // 最背面にずらす
   
   // フェードイン
   await sleep(500);
