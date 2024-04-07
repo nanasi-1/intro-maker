@@ -2,18 +2,6 @@ import { sleep } from "./util.js";
 import Sprite from "./Sprite.js";
 console.log('Hello World!');
 
-const getCanvas = () => {
-  /** @type {HTMLCanvasElement} */
-  const canvas = document.getElementById('root');
-  const ctx = canvas.getContext('2d');
-  const size = {w: canvas.width, h: canvas.height};
-  return {
-    canvas, ctx, 
-    canvasX: canvas.width / 2,
-    canvasY: canvas.height / 2
-  };
-}
-
 const getCostumes = async () => {
   const costumeElem = document.getElementById('costume');
   /** @type {{[key: string]: HTMLElement}} */ const costumes = {};
@@ -24,7 +12,7 @@ const getCostumes = async () => {
 }
 
 const main = async () => {
-  const {ctx, canvas, canvasX, canvasY} = getCanvas();
+  const canvas = document.getElementById('root');
   const sprite = new Sprite(canvas);
 
   const costumes = await getCostumes();
@@ -34,46 +22,46 @@ const main = async () => {
   document.getElementById('costume').remove();
 
   // 事前準備
-  circle.size(100000);
+  circle.setSize(100000);
   
   // フェードイン
   await sleep(500);
   for (let s = 50, i = 50; s > 0 && i > 0; s -= s / 10, i--) {
-    circle.size(s * 30);
+    circle.setSize(s * 30);
     await sleep(25);
   }
-  circle.size(0);
+  circle.setSize(0);
 
   // boxを左上に
   for (let x = 30; x > 0 && !box.isTouchingEdge('left'); x--) {
-    box.moveX(-x * 0.85);
+    box.changeX(-x * 0.85);
     await sleep(30);
   }
 
   for (let y = 16; y > 0 && !box.isTouchingEdge('top'); y--) {
-    box.moveY(y / 0.54);
+    box.changeY(y / 0.54);
     await sleep(30);
   }
 
   // ぐるぐる
   while (true) {
     for (let x = 30; x > 0 && !box.isTouchingEdge('right'); x--) {
-      box.moveX(x * 1.55);
+      box.changeX(x * 1.55);
       await sleep(30);
     }
 
     for (let y = 37; y > 0 && !box.isTouchingEdge('bottom'); y--) {
-      box.moveY(-y / 1.2);
+      box.changeY(-y / 1.2);
       await sleep(30);
     }
 
     for (let x = 30; x > 0 && !box.isTouchingEdge('left'); x--) {
-      box.moveX(-x * 1.55);
+      box.changeX(-x * 1.55);
       await sleep(30);
     }
 
     for (let y = 37; y > 0 && !box.isTouchingEdge('top'); y--) {
-      box.moveY(y / 1.2);
+      box.changeY(y / 1.2);
       await sleep(30);
     }
   }

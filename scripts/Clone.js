@@ -59,32 +59,32 @@ export default class Clone {
     await block(this.#img, this.ctx);
   }
 
-  moveX(x) {
-    this.#change('x', this.#current.x + x);
+  changeX(x) {
+    this.#setProp('x', this.#current.x + x);
   }
 
-  toX(x) {
-    this.#change('x', x);
+  setX(x) {
+    this.#setProp('x', x);
   }
 
-  moveY(y) {
-    this.#change('y', this.#current.y + y);
+  changeY(y) {
+    this.#setProp('y', this.#current.y + y);
   }
 
-  toY(y) {
-    this.#change('y', y);
+  setY(y) {
+    this.#setProp('y', y);
   }
 
-  to(x, y) {
-    this.#change('x', x);
-    this.#change('y', y);
+  go(x, y) {
+    this.#setProp('x', x);
+    this.#setProp('y', y);
   }
 
-  size(s) {
-    this.#change('size', s);
+  setSize(s) {
+    this.#setProp('size', s);
   }
 
-  #change(prop, value) {
+  #setProp(prop, value) {
     this.#current[prop] = value;
     this.#sprite._render();
   }
@@ -124,7 +124,7 @@ export default class Clone {
    * @param {keyof CSSStyleDeclaration} prop 
    * @param {*} value 
    */
-  writeStyle(prop, value) {
+  setStyle(prop, value) {
     this.#elem.style[prop] = value;
     this.#isUpdateImage = false;
     this.#sprite._render();
