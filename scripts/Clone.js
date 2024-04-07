@@ -96,12 +96,20 @@ export default class Clone {
     this.#setProp('y', y);
   }
 
+  changeSize(s) {
+    this.#setProp('size', this.#current.size + s);
+  }
+
   setSize(s) {
     this.#setProp('size', s);
   }
 
   setDeg(deg) {
     this.#setProp('deg', deg);
+  }
+
+  turn(deg) {
+    this.#setProp('deg', this.#current.deg + deg);
   }
 
   show() {

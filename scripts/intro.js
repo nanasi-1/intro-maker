@@ -23,11 +23,10 @@ const main = async () => {
 
   // 事前準備
   box.hide();
+  box.setSize(20);
   circle.setSize(100000);
   sprite.changeLayer(box, 1); // 一つ手前にずらす
   sprite.goToLayer(background, 'back'); // 最背面にずらす
-  // box.setDeg(45);
-  box.setSize(50);
   
   // フェードイン
   await sleep(500);
@@ -40,41 +39,55 @@ const main = async () => {
 
   // boxを左上に
   for (let x = 35; x > 0 && !box.isTouchingEdge('left'); x--) {
-    box.changeX(-x * 0.85);
+    box.changeSize(x / 5);
+    box.changeX(-x * 0.8);
+    box.turn(x / 10);
     await sleep(30);
   }
+  box.setSize(100);
   box.setX(-box.canvasWidth);
-  for (let y = 20; y > 0 && !box.isTouchingEdge('top'); y--) {
-    box.changeY(y / 0.54);
+  box.setDeg(135);
+  for (let y = 40; y > 0 && !box.isTouchingEdge('top'); y--) {
+    box.changeY(y * 0.5);
+    box.turn(y / 10);
     await sleep(30);
   }
   box.setY(box.canvasHeight);
+  box.setDeg(90);
 
   // ぐるぐる
   while (true) {
     for (let x = 33; x > 0 && !box.isTouchingEdge('right'); x--) {
       box.changeX(x * 1.55);
+      box.turn(x / 5.7);
       await sleep(30);
     }
     box.setX(box.canvasWidth)
+    box.setDeg(90);
 
-    for (let y = 37; y > 0 && !box.isTouchingEdge('bottom'); y--) {
-      box.changeY(-y / 1.2);
+    for (let y = 33; y > 0 && !box.isTouchingEdge('bottom'); y--) {
+      box.changeY(-y / 1);
+      box.turn(y / 6);
       await sleep(30);
     }
     box.setY(-box.canvasHeight);
+    box.setDeg(90);
 
     for (let x = 33; x > 0 && !box.isTouchingEdge('left'); x--) {
       box.changeX(-x * 1.55);
+      box.turn(x / 5.7);
       await sleep(30);
     }
     box.setX(-box.canvasWidth);
+    box.setDeg(90);
 
-    for (let y = 37; y > 0 && !box.isTouchingEdge('top'); y--) {
-      box.changeY(y / 1.2);
+    for (let y = 33; y > 0 && !box.isTouchingEdge('top'); y--) {
+      box.changeY(y / 1);
+      box.turn(y / 6);
       await sleep(30);
     }
     box.setY(box.canvasHeight);
+    box.setDeg(90);
   }
 };
 
