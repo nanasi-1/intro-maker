@@ -9,7 +9,8 @@ export default class Clone {
     x: 0, 
     y: 0,
     size: 100,
-    deg: 90
+    deg: 90,
+    isShow: true
   };
   #isUpdateImage = false;
   #size = {
@@ -33,6 +34,7 @@ export default class Clone {
    * @param {CanvasRenderingContext2D} ctx 描画に使用するctx
    */
   async _render(ctx) {
+    if(!this.#current.isShow) return;
     if(!this.#isUpdateImage) await this.#updateImage();
     ctx.save();
     const radio = this.#current.size / 100;
@@ -102,6 +104,19 @@ export default class Clone {
     this.#setProp('deg', deg);
   }
 
+  show() {
+    this.#setProp('isShow', true);
+  }
+
+  hide() {
+    this.#setProp('isShow', false);
+  }
+
+  /**
+   * #currentの値を変更する
+   * @param {'x' | 'y' | 'size' | 'deg' | 'isShow'} prop 
+   * @param {number | boolean} value 
+   */
   #setProp(prop, value) {
     this.#current[prop] = value;
     this.#sprite._render();
@@ -112,29 +127,37 @@ export default class Clone {
    * @param {'top' | 'left' | 'bottom' | 'right'} direction 触れたかどうか調べる方角
    */
   isTouchingEdge(direction) {
-    const radio = this.#current.size / 100;
-    const currentSizeW = this.#size.w * radio / 2;
-    const currentSizeH = this.#size.h * radio / 2;
-    const canvasW = this.#sprite.canvas.width / 2;
-    const canvasH = this.#sprite.canvas.height / 2;
-
     switch (direction) {
       case 'top':
-        return canvasH <= this.current.y + currentSizeH;
+        return this.canvasHeight <= this.#current.y;
       case 'right': 
-        return canvasW <= this.current.x + currentSizeW;
+        return this.canvasWidth <= this.#current.x;
       case 'left':
-        return -canvasW >= this.current.x - currentSizeW;
+        return -this.canvasWidth >= this.#current.x;
       case 'bottom':
-        return -canvasH >= this.current.y - currentSizeH;
+        return -this.canvasHeight >= this.#current.y;
     
       default:
         throw new Error('direction引数は top | left | bottom | right にしてください')
     }
   }
 
-  get current() {
-    return this.#current;
+  /**
+   * 自身のサイズを考慮したキャンバスの端の座標を返す
+   * x座標版
+   */
+  get canvasWidth() {
+    const radio = this.#current.size / 100;
+    return this.#sprite.canvas.width / 2 - this.#size.w * radio / 2;
+  }
+
+  /**
+   * 自身のサイズを考慮したキャンバスの端の座標を返す
+   * y座標版
+   */
+  get canvasHeight() {
+    const radio = this.#current.size / 100;
+    return this.#sprite.canvas.height / 2 - this.#size.h * radio / 2;
   }
 
   /**
