@@ -44,26 +44,25 @@ const main = async () => {
   circle.size(0);
 
   while (true) {
-
-    for (let x = 30; x > 0 && box.coordinate.x < canvas.width - 100; x--) {
+    for (let x = 30; x > 0 && box.current.x < canvas.width - 100; x--) {
       box.moveX(x * 1.55);
       await sleep(30);
     }
     box.toX(canvas.width / 2);
 
-    for (let y = 40; y > 0 && box.coordinate.y < canvas.height - 100; y--) {
+    for (let y = 40; y > 0 && box.current.y < canvas.height - 100; y--) {
       box.moveY(y / 1.2);
       await sleep(30);
     }
     box.toY(canvas.height / 2);
 
-    for (let x = 30; x > 0 && box.coordinate.x > -canvas.width; x--) {
+    for (let x = 30; x > 0 && box.current.x > -canvas.width; x--) {
       box.moveX(-x * 1.55);
       await sleep(30);
     }
     box.toX(-canvas.width / 2);
 
-    for (let y = 40; y > 0 && box.coordinate.y > -canvas.height; y--) {
+    for (let y = 40; y > 0 && box.current.y > -canvas.height; y--) {
       box.moveY(-y / 1.2);
       await sleep(30);
     }
@@ -80,10 +79,8 @@ try {
 /*
 # キャンバスの端への移動について
 - sizeHackモードを作って、キャンバスの外には出ないようにする
-- 端に飛ぶメソッドを作る
 - その辺の数値が取得できるgetterを作る
 
 # サイズについて
-- domtoimageの挙動がかなり不安なため、サイズ関係のメソッドが欲しい
 - domtoimageに頼らない、ctxで描画するCloneがあってもいいかも
  */

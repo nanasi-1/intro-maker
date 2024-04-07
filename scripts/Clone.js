@@ -32,7 +32,7 @@ export default class Sprite {
 }
 
 export class Clone {
-  coordinate = {
+  #current = {
     x: 0, 
     y: 0,
     size: 100
@@ -63,11 +63,11 @@ export class Clone {
    */
   async _render(ctx) {
     if(!this.#isUpdateImage) await this.#updateImage();
-    const radio = this.coordinate.size / 100;
+    const radio = this.#current.size / 100;
     ctx.drawImage(
       this.#img, 
-      this.coordinate.x - this.#size.w * radio / 2, 
-      this.coordinate.y - this.#size.h * radio / 2,
+      this.#current.x - this.#size.w * radio / 2, 
+      this.#current.y - this.#size.h * radio / 2,
       ctx.canvas.width * radio,
       ctx.canvas.height * radio
     );
@@ -90,7 +90,7 @@ export class Clone {
   }
 
   moveX(x) {
-    this.#change('x', this.coordinate.x + x);
+    this.#change('x', this.#current.x + x);
   }
 
   toX(x) {
@@ -98,7 +98,7 @@ export class Clone {
   }
 
   moveY(y) {
-    this.#change('y', this.coordinate.y + y);
+    this.#change('y', this.#current.y + y);
   }
 
   toY(y) {
@@ -115,8 +115,12 @@ export class Clone {
   }
 
   #change(prop, value) {
-    this.coordinate[prop] = value;
+    this.#current[prop] = value;
     this.#sprite._render();
+  }
+
+  get current() {
+    return Object.create(this.#current);
   }
 
   /**
