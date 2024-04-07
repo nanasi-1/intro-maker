@@ -1,5 +1,5 @@
 import { sleep } from "./util.js";
-import Sprite from "./Clone.js";
+import Sprite from "./Sprite.js";
 console.log('Hello World!');
 
 const getCanvas = () => {
@@ -25,12 +25,12 @@ const getCostumes = async () => {
 
 const main = async () => {
   const {ctx, canvas, canvasX, canvasY} = getCanvas();
-  const sprite = new Sprite(canvas, ctx);
+  const sprite = new Sprite(canvas);
 
   const costumes = await getCostumes();
-  const background = sprite.add(costumes.background);
-  const box = sprite.add(costumes.box);
-  const circle = sprite.add(costumes.circle);
+  const background = sprite.clone(costumes.background);
+  const box = sprite.clone(costumes.box);
+  const circle = sprite.clone(costumes.circle);
   document.getElementById('costume').remove();
   box.to(-canvasX, -canvasY);
   

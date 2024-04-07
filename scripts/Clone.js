@@ -1,37 +1,4 @@
-export default class Sprite {
-  static alreadyCreate = false;
-  clones = [];
-  canvas;
-  ctx;
-
-  /**
-   * スプライト=クローンの管理係
-   * @param {HTMLCanvasElement} canvas 描画するキャンバス
-   * @param {CanvasRenderingContext2D} ctx キャンバスのctx
-   */
-  constructor (canvas, ctx) {
-    if(Sprite.alreadyCreate) throw new Error('スプライトは一つまでです。すみません。');
-    Sprite.alreadyCreate = true;
-    this.canvas = canvas;
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    this.ctx = ctx;
-  }
-
-  add(img) {
-    const clone = new Clone(img, this);
-    this.clones.push(clone);
-    return clone;
-  }
-
-  _render() {
-    this.ctx.clearRect(-(this.canvas.width / 2), -(this.canvas.height / 2), 10000, 10000);
-    for (const clone of this.clones) {
-      clone._render(this.ctx);
-    }
-  }
-}
-
-export class Clone {
+export default class Clone {
   #current = {
     x: 0, 
     y: 0,
@@ -118,6 +85,8 @@ export class Clone {
     this.#current[prop] = value;
     this.#sprite._render();
   }
+
+  isTouchingEdge() {}
 
   get current() {
     return Object.create(this.#current);
