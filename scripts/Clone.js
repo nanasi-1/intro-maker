@@ -58,13 +58,22 @@ export class Clone {
     this.#elem = elem;
     this.#size.w = elem.clientWidth;
     this.#size.h = elem.clientHeight;
-    console.log(this.#size);
   }
 
-  /** 現在の座標をもとに描画 */
+  /** 
+   * 現在の情報をもとに描画 
+   * @param {CanvasRenderingContext2D} ctx 描画に使用するctx
+   */
   async _render(ctx) {
     if(!this.#isUpdateImage) await this.#updateImage();
-    ctx.drawImage(this.#img, this.coordinate.x - this.#size.w / 2, this.coordinate.y - this.#size.h / 2);
+    const radio = this.coordinate.size / 100;
+    ctx.drawImage(
+      this.#img, 
+      this.coordinate.x - this.#size.w / 2, 
+      this.coordinate.y - this.#size.h / 2,
+      ctx.canvas.width * radio,
+      ctx.canvas.height * radio
+    );
   }
 
   /** 画像を更新 */
@@ -84,27 +93,31 @@ export class Clone {
   }
 
   moveX(x) {
-    this.#move('x', this.coordinate.x + x);
+    this.#change('x', this.coordinate.x + x);
   }
 
   toX(x) {
-    this.#move('x', x);
+    this.#change('x', x);
   }
 
   moveY(y) {
-    this.#move('y', this.coordinate.y + y);
+    this.#change('y', this.coordinate.y + y);
   }
 
   toY(y) {
-    this.#move('y', y);
+    this.#change('y', y);
   }
 
   to(x, y) {
-    this.#move('x', x);
-    this.#move('y', y);
+    this.#change('x', x);
+    this.#change('y', y);
   }
 
-  #move(prop, value) {
+  size(s) {
+    this.#change('size', s);
+  }
+
+  #change(prop, value) {
     this.coordinate[prop] = value;
     this.#sprite._render();
   }

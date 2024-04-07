@@ -36,11 +36,13 @@ const main = async () => {
   box.to(-canvasX, -canvasY);
   
   while (true) {
-    for (let i = 100; i > 20; i -= (i - 10) / 10) {
-      const size = i / 100;
-      circle.writeStyle('scale', size);
+    for (let s = 30; s > 5; s -= (s - 2) / 10) {
+      circle.size(s * 5);
       await sleep(30);
     }
+  }
+
+  while (true) {
 
     for (let x = 30; x > 0 && box.coordinate.x < canvas.width - 100; x--) {
       box.moveX(x * 1.55);
