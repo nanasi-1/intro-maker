@@ -1,8 +1,8 @@
 import Clone from "./Clone.js";
 
 export default class Sprite {
-  static alreadyCreate = false;
-  clones = [];
+  static #alreadyCreate = false;
+  #clones = [];
   canvas;
   ctx;
 
@@ -12,8 +12,8 @@ export default class Sprite {
    * @param {CanvasRenderingContext2D} ctx キャンバスのctx
    */
   constructor (canvas) {
-    if(Sprite.alreadyCreate) throw new Error('スプライトは一つまでです。すみません。');
-    Sprite.alreadyCreate = true;
+    if(Sprite.#alreadyCreate) throw new Error('スプライトは一つまでです。すみません。');
+    Sprite.#alreadyCreate = true;
     this.canvas = canvas;
     const ctx = canvas.getContext('2d');
     ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -22,13 +22,13 @@ export default class Sprite {
 
   clone(img) {
     const clone = new Clone(img, this);
-    this.clones.push(clone);
+    this.#clones.push(clone);
     return clone;
   }
 
   _render() {
     this.ctx.clearRect(-(this.canvas.width / 2), -(this.canvas.height / 2), 10000, 10000);
-    for (const clone of this.clones) {
+    for (const clone of this.#clones) {
       clone._render(this.ctx);
     }
   }

@@ -1,12 +1,15 @@
+import Sprite from "./Sprite.js"; /** 型用 */
+
 export default class Clone {
+  #sprite;
+  #elem;
+  #img = null;
+
   #current = {
     x: 0, 
     y: 0,
     size: 100
   };
-  #img = null;
-  #sprite;
-  #elem;
   #isUpdateImage = false;
   #size = {
     w: 0,
@@ -34,9 +37,9 @@ export default class Clone {
     ctx.drawImage(
       this.#img, 
       this.#current.x - this.#size.w * radio / 2, 
-      this.#current.y - this.#size.h * radio / 2,
-      ctx.canvas.width * radio,
-      ctx.canvas.height * radio
+      -(this.#current.y) - this.#size.h * radio / 2,
+      this.#sprite.canvas.width * radio,
+      this.#sprite.canvas.height * radio
     );
   }
 
@@ -86,10 +89,34 @@ export default class Clone {
     this.#sprite._render();
   }
 
-  isTouchingEdge() {}
+  /**
+   * 端に触れたか
+   * @param {'top' | 'left' | 'bottom' | 'right'} direction 触れたかどうか調べる方角
+   */
+  isTouchingEdge(direction) {
+    const radio = this.#current.size / 100;
+    const currentSizeW = this.#size.w * radio / 2;
+    const currentSizeH = this.#size.h * radio / 2;
+    const canvasW = this.#sprite.canvas.width / 2;
+    const canvasH = this.#sprite.canvas.height / 2;
+
+    switch (direction) {
+      case 'top':
+        return canvasH <= this.current.y;
+      case 'right': 
+        return canvasW <= this.current.x;
+      case 'left':
+        return -canvasW >= this.current.x;
+      case 'bottom':
+        return -canvasH >= this.current.y;
+    
+      default:
+        throw new Error('direction引数は top | left | bottom | right にしてください')
+    }
+  }
 
   get current() {
-    return Object.create(this.#current);
+    return this.#current;
   }
 
   /**

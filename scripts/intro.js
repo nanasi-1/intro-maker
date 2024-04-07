@@ -32,7 +32,7 @@ const main = async () => {
   const box = sprite.clone(costumes.box);
   const circle = sprite.clone(costumes.circle);
   document.getElementById('costume').remove();
-  box.to(-canvasX, -canvasY);
+  box.to(-canvasX, canvasY);
   
   // フェードイン
   circle.size(100000);
@@ -44,29 +44,29 @@ const main = async () => {
   circle.size(0);
 
   while (true) {
-    for (let x = 30; x > 0 && box.current.x < canvas.width - 100; x--) {
+    for (let x = 32; x > 0 && !box.isTouchingEdge('right'); x--) {
       box.moveX(x * 1.55);
       await sleep(30);
     }
-    box.toX(canvas.width / 2);
+    // box.toX(canvas.width / 2);
 
-    for (let y = 40; y > 0 && box.current.y < canvas.height - 100; y--) {
-      box.moveY(y / 1.2);
-      await sleep(30);
-    }
-    box.toY(canvas.height / 2);
-
-    for (let x = 30; x > 0 && box.current.x > -canvas.width; x--) {
-      box.moveX(-x * 1.55);
-      await sleep(30);
-    }
-    box.toX(-canvas.width / 2);
-
-    for (let y = 40; y > 0 && box.current.y > -canvas.height; y--) {
+    for (let y = 40; y > 0 && !box.isTouchingEdge('bottom'); y--) {
       box.moveY(-y / 1.2);
       await sleep(30);
     }
-    box.toY(-canvas.height / 2);
+    // box.toY(canvas.height / 2);
+
+    for (let x = 32; x > 0 && !box.isTouchingEdge('left'); x--) {
+      box.moveX(-x * 1.55);
+      await sleep(30);
+    }
+    // box.toX(-canvas.width / 2);
+
+    for (let y = 40; y > 0 && !box.isTouchingEdge('top'); y--) {
+      box.moveY(y / 1.2);
+      await sleep(30);
+    }
+    // box.toY(-canvas.height / 2);
   }
 };
 
