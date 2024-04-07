@@ -25,6 +25,7 @@ const main = async () => {
   circle.setSize(100000);
   sprite.changeLayer(box, 1); // 一つ手前にずらす
   sprite.goToLayer(background, 'back'); // 最背面にずらす
+  box.setDeg(45);
   
   // フェードイン
   await sleep(500);

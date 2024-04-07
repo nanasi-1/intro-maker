@@ -9,7 +9,7 @@ export default class Clone {
     x: 0, 
     y: 0,
     size: 100,
-    deg: 45
+    deg: 90
   };
   #isUpdateImage = false;
   #size = {
@@ -36,15 +36,25 @@ export default class Clone {
     if(!this.#isUpdateImage) await this.#updateImage();
     ctx.save();
     const radio = this.#current.size / 100;
+    const {x: currentX, y: currentY} = this._calcCoordinate(this.#current.x, -this.#current.y, this.#current.deg);
+
     ctx.rotate(Math.PI / 180 * (this.#current.deg - 90));
     ctx.drawImage(
       this.#img, 
-      this.#current.x - this.#size.w * radio / 2, 
-      -(this.#current.y) - this.#size.h * radio / 2,
+      currentX - this.#size.w * radio / 2,
+      currentY - this.#size.h * radio / 2,
       this.#sprite.canvas.width * radio,
       this.#sprite.canvas.height * radio
     );
+
     ctx.restore();
+  }
+
+  _calcCoordinate(x, y, deg) {
+    const radian = Math.PI / 180 * (90 - deg);
+    const calcX = Math.cos(radian) * x - Math.sin(radian) * y;
+    const calcY = Math.sin(radian) * x + y * Math.cos(radian);
+    return {x: calcX, y: calcY};
   }
 
   /** 画像を更新 */
@@ -86,6 +96,10 @@ export default class Clone {
 
   setSize(s) {
     this.#setProp('size', s);
+  }
+
+  setDeg(deg) {
+    this.#setProp('deg', deg);
   }
 
   #setProp(prop, value) {
