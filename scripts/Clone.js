@@ -102,13 +102,13 @@ export default class Clone {
 
     switch (direction) {
       case 'top':
-        return canvasH <= this.current.y;
+        return canvasH <= this.current.y + currentSizeH;
       case 'right': 
-        return canvasW <= this.current.x;
+        return canvasW <= this.current.x + currentSizeW;
       case 'left':
-        return -canvasW >= this.current.x;
+        return -canvasW >= this.current.x - currentSizeW;
       case 'bottom':
-        return -canvasH >= this.current.y;
+        return -canvasH >= this.current.y - currentSizeH;
     
       default:
         throw new Error('direction引数は top | left | bottom | right にしてください')

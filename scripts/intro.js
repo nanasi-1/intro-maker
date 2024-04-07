@@ -32,10 +32,11 @@ const main = async () => {
   const box = sprite.clone(costumes.box);
   const circle = sprite.clone(costumes.circle);
   document.getElementById('costume').remove();
-  box.to(-canvasX, canvasY);
+
+  // 事前準備
+  circle.size(100000);
   
   // フェードイン
-  circle.size(100000);
   await sleep(500);
   for (let s = 50, i = 50; s > 0 && i > 0; s -= s / 10, i--) {
     circle.size(s * 30);
@@ -43,30 +44,38 @@ const main = async () => {
   }
   circle.size(0);
 
+  // boxを左上に
+  for (let x = 30; x > 0 && !box.isTouchingEdge('left'); x--) {
+    box.moveX(-x * 0.85);
+    await sleep(30);
+  }
+
+  for (let y = 16; y > 0 && !box.isTouchingEdge('top'); y--) {
+    box.moveY(y / 0.54);
+    await sleep(30);
+  }
+
+  // ぐるぐる
   while (true) {
-    for (let x = 32; x > 0 && !box.isTouchingEdge('right'); x--) {
+    for (let x = 30; x > 0 && !box.isTouchingEdge('right'); x--) {
       box.moveX(x * 1.55);
       await sleep(30);
     }
-    // box.toX(canvas.width / 2);
 
-    for (let y = 40; y > 0 && !box.isTouchingEdge('bottom'); y--) {
+    for (let y = 37; y > 0 && !box.isTouchingEdge('bottom'); y--) {
       box.moveY(-y / 1.2);
       await sleep(30);
     }
-    // box.toY(canvas.height / 2);
 
-    for (let x = 32; x > 0 && !box.isTouchingEdge('left'); x--) {
+    for (let x = 30; x > 0 && !box.isTouchingEdge('left'); x--) {
       box.moveX(-x * 1.55);
       await sleep(30);
     }
-    // box.toX(-canvas.width / 2);
 
-    for (let y = 40; y > 0 && !box.isTouchingEdge('top'); y--) {
+    for (let y = 37; y > 0 && !box.isTouchingEdge('top'); y--) {
       box.moveY(y / 1.2);
       await sleep(30);
     }
-    // box.toY(-canvas.height / 2);
   }
 };
 
@@ -75,12 +84,3 @@ try {
 } catch (e) {
   console.error('エラーが発生しました', e);
 }
-
-/*
-# キャンバスの端への移動について
-- sizeHackモードを作って、キャンバスの外には出ないようにする
-- その辺の数値が取得できるgetterを作る
-
-# サイズについて
-- domtoimageに頼らない、ctxで描画するCloneがあってもいいかも
- */
