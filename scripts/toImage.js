@@ -32,15 +32,16 @@ const main = async () => {
   const box = sprite.add(costumes.box);
   const circle = sprite.add(costumes.circle);
   document.getElementById('costume').remove();
-
   box.to(-canvasX, -canvasY);
   
-  while (true) {
-    for (let s = 30; s > 5; s -= (s - 2) / 10) {
-      circle.size(s * 5);
-      await sleep(30);
-    }
+  // フェードイン
+  circle.size(100000);
+  await sleep(500);
+  for (let s = 50, i = 50; s > 0 && i > 0; s -= s / 10, i--) {
+    circle.size(s * 30);
+    await sleep(25);
   }
+  circle.size(0);
 
   while (true) {
 

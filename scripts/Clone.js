@@ -27,9 +27,6 @@ export default class Sprite {
     this.ctx.clearRect(-(this.canvas.width / 2), -(this.canvas.height / 2), 10000, 10000);
     for (const clone of this.clones) {
       clone._render(this.ctx);
-
-      this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'middle';
     }
   }
 }
@@ -69,8 +66,8 @@ export class Clone {
     const radio = this.coordinate.size / 100;
     ctx.drawImage(
       this.#img, 
-      this.coordinate.x - this.#size.w / 2, 
-      this.coordinate.y - this.#size.h / 2,
+      this.coordinate.x - this.#size.w * radio / 2, 
+      this.coordinate.y - this.#size.h * radio / 2,
       ctx.canvas.width * radio,
       ctx.canvas.height * radio
     );
