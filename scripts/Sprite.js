@@ -1,11 +1,12 @@
 import Clone from "./Clone.js";
+import Blocks from './Block.js';
 
 export default class Sprite {
   static #alreadyCreate = false;
   #clones = [];
   canvas;
   ctx;
-  #isDelete = false;
+  #blocks;
 
   /**
    * スプライト=クローンの管理係
@@ -15,21 +16,22 @@ export default class Sprite {
   constructor (canvas) {
     if(Sprite.#alreadyCreate) throw new Error('スプライトは一つまでです。すみません。');
     Sprite.#alreadyCreate = true;
+    
     this.canvas = canvas;
     const ctx = canvas.getContext('2d');
     ctx.translate(canvas.width / 2, canvas.height / 2);
     this.ctx = ctx;
+    this.#blocks = new Blocks();
   }
 
-  clone(img) {
-    const clone = new Clone(img, this);
+  clone(img, cloneId) {
+    const clone = new Clone(img, this, cloneId);
     this.#clones.push(clone);
     this._render();
     return clone;
   }
 
   _render() {
-    if(this.#isDelete) return;
     this.ctx.clearRect(-this.canvas.width * 2, -this.canvas.height * 2, this.canvas.width * 4, this.canvas.height * 4);
     for (const clone of this.#clones) {
       clone._render(this.ctx);
@@ -74,10 +76,16 @@ export default class Sprite {
     this._render();
   }
 
-  destroy() {
+  flag() {
     this.#clones.length = 0;
-    this.canvas = null;
-    this.ctx = null;
-    this.#isDelete = true;
+    this.#blocks.flag();
+  }
+
+  /**
+   * イベントが発生した際の関数を追加
+   * @param {() => Promise<void>} func 関数
+   */
+  block(event, func) {
+    this.#blocks.add(func);
   }
 }

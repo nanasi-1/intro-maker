@@ -1,6 +1,5 @@
 import { sleep } from "./util.js";
 import Sprite from "./Sprite.js";
-import Blocks from './Block.js';
 console.log('Hello World!');
 
 const costumeElem = document.getElementById('costume');
@@ -15,10 +14,10 @@ const getCostumes = async (costumeElem) => {
 }
 
 const canvas = document.getElementById('root');
-const costumes = await getCostumes(costumeElem);
+const sprite = new Sprite(canvas);
 
-const main = async () => {
-  const sprite = new Sprite(canvas);
+sprite.block('flag', async () => {
+  const costumes = await getCostumes(costumeElem);
   const box = sprite.clone(costumes.box);
   const circle = sprite.clone(costumes.circle);
   const background = sprite.clone(costumes.background);
@@ -92,10 +91,6 @@ const main = async () => {
     box.setY(box.canvasHeight);
     box.setDeg(90);
   }
-};
+});
 
-const blocks = new Blocks();
-blocks.add(main);
-blocks.flag();
-
-globalThis.blocks = blocks
+sprite.flag();
