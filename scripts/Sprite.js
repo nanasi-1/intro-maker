@@ -34,10 +34,15 @@ export default class Sprite {
     }
   }
 
-  changeLayer(clone, count) {
+  #deleteFromClones(clone) {
     if(!this.#clones.includes(clone)) throw new Error('クローンが見つかりませんでした');
     const index = this.#clones.indexOf(clone); // クローンが何番目か
     this.#clones.splice(index, 1)[0]; // 取り除く
+    return index;
+  }
+
+  changeLayer(clone, count) {
+    const index = this.#deleteFromClones(clone);
     this.#clones.splice(index + count, 0, clone);
     this._render();
   }
@@ -48,10 +53,7 @@ export default class Sprite {
    * @param {'front' | 'back'} mode 最前面 or 最背面
    */
   goToLayer(clone, mode) {
-    if(!this.#clones.includes(clone)) throw new Error('クローンが見つかりませんでした');
-    const index = this.#clones.indexOf(clone);
-    this.#clones.splice(index, 1)[0]; // 取り除く
-
+    this.#deleteFromClones(clone);
     switch (mode) {
       case 'front':
         this.#clones.push(clone);
@@ -62,6 +64,11 @@ export default class Sprite {
       default:
         throw new Error('modeはfrontかbackにしてください');
     }
+    this._render();
+  }
+
+  deleteClone(clone) {
+    this.#deleteFromClones(clone);
     this._render();
   }
 }

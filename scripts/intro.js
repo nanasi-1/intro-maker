@@ -35,7 +35,7 @@ const main = async () => {
     await sleep(25);
   }
   box.show();
-  circle.hide();
+  sprite.deleteClone(circle);
 
   // boxを左上に
   for (let x = 35; x > 0 && !box.isTouchingEdge('left'); x--) {
