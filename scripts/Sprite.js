@@ -5,6 +5,7 @@ export default class Sprite {
   #clones = [];
   canvas;
   ctx;
+  #isDelete = false;
 
   /**
    * スプライト=クローンの管理係
@@ -28,6 +29,7 @@ export default class Sprite {
   }
 
   _render() {
+    if(this.#isDelete) return;
     this.ctx.clearRect(-this.canvas.width * 2, -this.canvas.height * 2, this.canvas.width * 4, this.canvas.height * 4);
     for (const clone of this.#clones) {
       clone._render(this.ctx);
@@ -70,5 +72,12 @@ export default class Sprite {
   deleteClone(clone) {
     this.#deleteFromClones(clone);
     this._render();
+  }
+
+  destroy() {
+    this.#clones.length = 0;
+    this.canvas = null;
+    this.ctx = null;
+    this.#isDelete = true;
   }
 }

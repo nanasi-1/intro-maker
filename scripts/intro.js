@@ -1,9 +1,12 @@
 import { sleep } from "./util.js";
 import Sprite from "./Sprite.js";
+import Blocks from './Block.js';
 console.log('Hello World!');
 
-const getCostumes = async () => {
-  const costumeElem = document.getElementById('costume');
+const costumeElem = document.getElementById('costume');
+costumeElem.remove();
+const getCostumes = async (costumeElem) => {
+  document.body.append(costumeElem);
   /** @type {{[key: string]: HTMLElement}} */ const costumes = {};
   for (const elem of costumeElem.children) {
     costumes[elem.id] = elem;
@@ -11,15 +14,15 @@ const getCostumes = async () => {
   return costumes;
 }
 
-const main = async () => {
-  const canvas = document.getElementById('root');
-  const sprite = new Sprite(canvas);
+const canvas = document.getElementById('root');
+const costumes = await getCostumes(costumeElem);
 
-  const costumes = await getCostumes();
+const main = async () => {
+  const sprite = new Sprite(canvas);
   const box = sprite.clone(costumes.box);
   const circle = sprite.clone(costumes.circle);
   const background = sprite.clone(costumes.background);
-  document.getElementById('costume').remove();
+  costumeElem.remove();
 
   // 事前準備
   box.hide();
@@ -91,8 +94,8 @@ const main = async () => {
   }
 };
 
-try {
-  main();
-} catch (e) {
-  console.error('エラーが発生しました', e);
-}
+const blocks = new Blocks();
+blocks.add(main);
+blocks.flag();
+
+globalThis.blocks = blocks

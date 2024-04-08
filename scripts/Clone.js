@@ -67,14 +67,6 @@ export default class Clone {
     this.#isUpdateImage = true;
   }
 
-  /**
-   * 何に使うんだろこれ
-   * @param {(costume: CanvasImageSource, ctx: CanvasRenderingContext2D) => Promise<void>} block 
-   */
-  async program (block) {
-    await block(this.#img, this.ctx);
-  }
-
   changeX(x) {
     this.#setProp('x', this.#current.x + x);
   }
