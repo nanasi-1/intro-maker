@@ -4,11 +4,24 @@ import Blocks from './Block.js';
 class CloneId {
   id;
   costume;
+  size = {
+    w: 0,
+    h: 0
+  }
   /** @type {(Clone) => Promise<void>} */ block;
+
+  /**
+   * クローンの動きを登録する
+   * @param {string} cloneId クローンの識別子
+   * @param {HTMLElement} costume コスチューム
+   * @param {(Clone) => Promise<void>} block クローン時に実行される関数
+   */
   constructor(cloneId, costume, block) {
     this.id = cloneId;
     this.costume = costume;
     this.block = block;
+    this.size.w = costume.clientWidth || parseFloat(costume.style.width.replace('px', ''));
+    this.size.h = costume.clientHeight || parseFloat(costume.style.height.replace('px', ''));
   }
 }
 
@@ -40,7 +53,7 @@ export default class Sprite {
    * クローンの処理を新しく登録する
    * @param {string} cloneId クローンの識別子
    * @param {CanvasImageSource} costume 描画されるコスチューム
-   * @param {(clone: Clone) => Promise<void>} block クローン時に実行される関数
+   * @param {(clone: Clone, sprite: Sprite) => Promise<void>} block クローン時に実行される関数
    */
   whenClone(cloneId, costume, block) {
     const cloneIdObj = new CloneId(cloneId, costume, block);
@@ -49,7 +62,7 @@ export default class Sprite {
 
   createClone(cloneId) {
     const id = this.#getCloneId(cloneId);
-    const clone = new Clone(id.costume, this, cloneId);
+    const clone = new Clone(id.costume, this, id.size);
     this.#clones.push(clone);
     this._render();
     id.block(clone, this);

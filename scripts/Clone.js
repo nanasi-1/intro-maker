@@ -3,7 +3,6 @@ import Sprite from "./Sprite.js"; /** 型用 */
 export default class Clone {
   #sprite;
   #elem;
-  id;
   #img = null;
 
   #current = {
@@ -22,13 +21,13 @@ export default class Clone {
   /**
    * @param {HTMLElement} elem 
    * @param {Sprite} sprite 
+   * @param {{w: number, h: number}} size クローンのサイズ
    */
-  constructor (elem, sprite, id) {
+  constructor (elem, sprite, size) {
     this.#sprite = sprite;
     this.#elem = elem;
-    this.#size.w = elem.clientWidth;
-    this.#size.h = elem.clientHeight;
-    this.id = id;
+    this.#size.w = size.w;
+    this.#size.h = size.h;
   }
 
   /** 
