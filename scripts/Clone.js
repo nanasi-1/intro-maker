@@ -3,7 +3,7 @@ import Sprite from "./Sprite.js"; /** 型用 */
 export default class Clone {
   #sprite;
   #elem;
-  #id;
+  id;
   #img = null;
 
   #current = {
@@ -28,7 +28,7 @@ export default class Clone {
     this.#elem = elem;
     this.#size.w = elem.clientWidth;
     this.#size.h = elem.clientHeight;
-    this.#id = id;
+    this.id = id;
   }
 
   /** 

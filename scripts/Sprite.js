@@ -1,9 +1,21 @@
 import Clone from "./Clone.js";
 import Blocks from './Block.js';
 
+class CloneId {
+  id;
+  costume;
+  /** @type {(Clone) => Promise<void>} */ block;
+  constructor(cloneId, costume, block) {
+    this.id = cloneId;
+    this.costume = costume;
+    this.block = block;
+  }
+}
+
 export default class Sprite {
   static #alreadyCreate = false;
   #clones = [];
+  /** @type {CloneId[]} */ #cloneIds = [];
   canvas;
   ctx;
   #blocks;
@@ -24,11 +36,29 @@ export default class Sprite {
     this.#blocks = new Blocks();
   }
 
-  clone(img, cloneId) {
-    const clone = new Clone(img, this, cloneId);
+  /**
+   * クローンの処理を新しく登録する
+   * @param {string} cloneId クローンの識別子
+   * @param {CanvasImageSource} costume 描画されるコスチューム
+   * @param {(clone: Clone) => Promise<void>} block クローン時に実行される関数
+   */
+  whenClone(cloneId, costume, block) {
+    const cloneIdObj = new CloneId(cloneId, costume, block);
+    this.#cloneIds.push(cloneIdObj);
+  }
+
+  createClone(cloneId) {
+    const id = this.#getCloneId(cloneId);
+    const clone = new Clone(id.costume, this, cloneId);
     this.#clones.push(clone);
     this._render();
-    return clone;
+    id.block(clone, this);
+  }
+
+  #getCloneId(idStr) {
+    const result = this.#cloneIds.find(cloneId => cloneId.id === idStr);
+    if(result === undefined) throw new Error(`CloneId${idStr}が見つかりませんでした`);
+    return result;
   }
 
   _render() {
@@ -83,9 +113,9 @@ export default class Sprite {
 
   /**
    * イベントが発生した際の関数を追加
-   * @param {() => Promise<void>} func 関数
+   * @param {(sprite: Sprite) => Promise<void>} func 関数
    */
   block(event, func) {
-    this.#blocks.add(func);
+    this.#blocks.add(() => func(this));
   }
 }
