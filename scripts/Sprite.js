@@ -58,7 +58,7 @@ export default class Sprite {
   }
 
   #deleteFromClones(clone) {
-    if(!this.#clones.includes(clone)) throw new Error('クローンが見つかりませんでした');
+    if(!this.#clones.includes(clone)) return;
     const index = this.#clones.indexOf(clone); // クローンが何番目か
     this.#clones.splice(index, 1)[0]; // 取り除く
     return index;
