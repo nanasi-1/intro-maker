@@ -1,29 +1,5 @@
 import Clone from "./Clone.js";
-import Blocks from './Block.js';
-
-class CloneId {
-  id;
-  costume;
-  size = {
-    w: 0,
-    h: 0
-  }
-  /** @type {(Clone) => Promise<void>} */ block;
-
-  /**
-   * クローンの動きを登録する
-   * @param {string} cloneId クローンの識別子
-   * @param {HTMLElement} costume コスチューム
-   * @param {(Clone) => Promise<void>} block クローン時に実行される関数
-   */
-  constructor(cloneId, costume, block) {
-    this.id = cloneId;
-    this.costume = costume;
-    this.block = block;
-    this.size.w = costume.clientWidth || parseFloat(costume.style.width.replace('px', ''));
-    this.size.h = costume.clientHeight || parseFloat(costume.style.height.replace('px', ''));
-  }
-}
+import CloneId from './CloneId.js';
 
 export default class Sprite {
   static #alreadyCreate = false;
@@ -31,14 +7,14 @@ export default class Sprite {
   /** @type {CloneId[]} */ #cloneIds = [];
   canvas;
   ctx;
-  #blocks;
+  #main;
 
   /**
    * スプライト=クローンの管理係
    * @param {HTMLCanvasElement} canvas 描画するキャンバス
-   * @param {CanvasRenderingContext2D} ctx キャンバスのctx
+   * @param {(sprite: Sprite) => Promise<void>} main flag時に実行される関数
    */
-  constructor (canvas) {
+  constructor (canvas, main) {
     if(Sprite.#alreadyCreate) throw new Error('スプライトは一つまでです。すみません。');
     Sprite.#alreadyCreate = true;
     
@@ -46,7 +22,7 @@ export default class Sprite {
     const ctx = canvas.getContext('2d');
     ctx.translate(canvas.width / 2, canvas.height / 2);
     this.ctx = ctx;
-    this.#blocks = new Blocks();
+    this.#main = main;
   }
 
   /**
@@ -121,14 +97,6 @@ export default class Sprite {
 
   flag() {
     this.#clones.length = 0;
-    this.#blocks.flag();
-  }
-
-  /**
-   * イベントが発生した際の関数を追加
-   * @param {(sprite: Sprite) => Promise<void>} func 関数
-   */
-  block(event, func) {
-    this.#blocks.add(() => func(this));
+    this.#main(this);
   }
 }

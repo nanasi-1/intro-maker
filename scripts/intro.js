@@ -12,7 +12,12 @@ const getCostumeElements = async (costumeElem) => {
 }
 
 const canvas = document.getElementById('root');
-const sprite = new Sprite(canvas);
+const sprite = new Sprite(canvas, async control => {
+  // クローンを作成
+  control.createClone('circle');
+  control.createClone('box');
+  control.createClone('background');
+});
 globalThis.sprite = sprite;
 
 // コスチュームと動きの登録
@@ -95,12 +100,4 @@ sprite.whenClone('background', costumes.background, async (bg, sprite) => {
 });
 
 costumeElem.remove();
-
-sprite.block('flag', async sprite => {
-  // クローンを作成
-  sprite.createClone('circle');
-  sprite.createClone('box');
-  sprite.createClone('background');
-});
-
 sprite.flag();
