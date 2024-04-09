@@ -1,5 +1,6 @@
 import Clone from "./Clone.js";
 import CloneId from './CloneId.js';
+import Event from "./Event.js";
 
 export default class Sprite {
   static #alreadyCreate = false;
@@ -8,6 +9,7 @@ export default class Sprite {
   canvas;
   ctx;
   #main;
+  event;
 
   /**
    * スプライト=クローンの管理係
@@ -23,6 +25,7 @@ export default class Sprite {
     ctx.translate(canvas.width / 2, canvas.height / 2);
     this.ctx = ctx;
     this.#main = main;
+    this.event = new Event(canvas);
   }
 
   /**
