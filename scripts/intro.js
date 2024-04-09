@@ -12,11 +12,13 @@ const getCostumeElements = async (costumeElem) => {
 }
 
 const canvas = document.getElementById('root');
-const sprite = new Sprite(canvas, async control => {
-  // クローンを作成
-  control.createClone('circle');
+const sprite = new Sprite(canvas, async (control, {event}) => {
+  // 背景
   control.createClone('background');
+  // フェードイン
+  control.createClone('circle');
   
+  await event.wait('fadeInEnd');
   while (true) {
     control.createClone('box');
     await sleep(1000);
@@ -29,14 +31,9 @@ globalThis.sprite = sprite;
 // コスチュームと動きの登録
 const costumes = await getCostumeElements(costumeElem);
 
-sprite.whenClone('box', costumes.box, async (box, sp) => {
-  box.hide();
-  box.setSize(20);
-
-  // フェードイン後（予定）
-  box.show();
-  
+sprite.whenClone('box', costumes.box, async (box, {sprite, event}) => {
   // boxを左上に
+  box.setSize(20);
   for (let x = 35; x > 0 && !box.isTouchingEdge('left'); x--) {
     box.changeSize(x / 5);
     box.changeX(-x * 0.8);
@@ -57,7 +54,7 @@ sprite.whenClone('box', costumes.box, async (box, sp) => {
   // ぐるぐる
   for (let x = 33; x > 0 && !box.isTouchingEdge('right'); x--) {
     box.changeX(x * 1.55);
-    box.turn(x / 5.7);
+    box.turn(x / 5.2);
     await sleep(30);
   }
   box.setX(box.canvasWidth)
@@ -65,43 +62,36 @@ sprite.whenClone('box', costumes.box, async (box, sp) => {
 
   for (let y = 33; y > 0 && !box.isTouchingEdge('bottom'); y--) {
     box.changeY(-y / 1);
-    box.turn(y / 6);
+    box.turn(y / 4.5);
     await sleep(30);
   }
   box.setY(-box.canvasHeight);
   box.setDeg(90);
 
-  for (let x = 33; x > 0 && !box.isTouchingEdge('left'); x--) {
+  for (let x = 35; x > 0; x--) {
     box.changeX(-x * 1.55);
-    box.turn(x / 5.7);
+    box.turn(x / 5.5);
     await sleep(30);
   }
   box.setX(-box.canvasWidth);
   box.setDeg(90);
 
-  for (let y = 33; y > 5; y--) {
-    box.changeY(y / 0.8);
-    box.turn(y / 6);
-    await sleep(30);
-  }
-  box.setY(box.canvasHeight);
-  box.setDeg(90);
-
   // 1週したら削除
-  sp.deleteClone(box);
+  sprite.deleteClone(box);
 });
 
-sprite.whenClone('circle', costumes.circle, async (circle, sprite) => {
+sprite.whenClone('circle', costumes.circle, async (circle, {sprite, event}) => {
   circle.setSize(100000);
   await sleep(500);
   for (let s = 50, i = 35; s > 0 && i > 0; s -= s / 10, i--) {
     circle.setSize(s * 30);
     await sleep(25);
   }
+  event.dispatch('fadeInEnd');
   sprite.deleteClone(circle);
 });
 
-sprite.whenClone('background', costumes.background, async (bg, sprite) => {
+sprite.whenClone('background', costumes.background, async (bg, {sprite}) => {
   sprite.goToLayer(bg, 'back'); // 最背面にずらす
 });
 

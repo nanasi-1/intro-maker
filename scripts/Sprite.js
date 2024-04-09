@@ -9,12 +9,11 @@ export default class Sprite {
   canvas;
   ctx;
   #main;
-  event;
 
   /**
    * スプライト=クローンの管理係
    * @param {HTMLCanvasElement} canvas 描画するキャンバス
-   * @param {(sprite: Sprite) => Promise<void>} main flag時に実行される関数
+   * @param {(sprite: Sprite, args: {event: Event}) => Promise<void>} main flag時に実行される関数
    */
   constructor (canvas, main) {
     if(Sprite.#alreadyCreate) throw new Error('スプライトは一つまでです。すみません。');
@@ -25,14 +24,13 @@ export default class Sprite {
     ctx.translate(canvas.width / 2, canvas.height / 2);
     this.ctx = ctx;
     this.#main = main;
-    this.event = new Event(canvas);
   }
 
   /**
    * クローンの処理を新しく登録する
    * @param {string} cloneId クローンの識別子
    * @param {CanvasImageSource} costume 描画されるコスチューム
-   * @param {(clone: Clone, sprite: Sprite) => Promise<void>} block クローン時に実行される関数
+   * @param {(clone: Clone, args: {sprite: Sprite, event: Event}) => Promise<void>} block クローン時に実行される関数
    */
   whenClone(cloneId, costume, block) {
     const cloneIdObj = new CloneId(cloneId, costume, block);
@@ -44,7 +42,9 @@ export default class Sprite {
     const clone = new Clone(id.costume, this, id.size);
     this.#clones.push(clone);
     this._render();
-    id.block(clone, this);
+
+    const event = new Event(this.canvas);
+    id.block(clone, {sprite: this, event});
   }
 
   #getCloneId(idStr) {
@@ -100,6 +100,7 @@ export default class Sprite {
 
   flag() {
     this.#clones.length = 0;
-    this.#main(this);
+    const event = new Event(this.canvas);
+    this.#main(this, {event});
   }
 }

@@ -1,3 +1,6 @@
+// これ単にCanvasにイベント配信してるだけ
+// 要するに別のEventオブジェクトでもイベントは共有される
+
 export default class {
   #canvas;
 
