@@ -11,7 +11,8 @@ export default class Clone {
     y: 0,
     size: 100,
     deg: 90,
-    isShow: true
+    isShow: true,
+    ghost: 0 // 透明度
   };
   #isUpdateImage = false;
   #size = {
@@ -45,6 +46,7 @@ export default class Clone {
     const {x: currentX, y: currentY} = this._calcCoordinate(this.#current.x, -this.#current.y, this.#current.deg);
 
     ctx.rotate(Math.PI / 180 * (this.#current.deg - 90));
+    ctx.globalAlpha = (100 - this.#current.ghost) / 100;
     ctx.drawImage(
       this.#img, 
       currentX - this.#size.w * radio / 2,
@@ -71,6 +73,8 @@ export default class Clone {
     this.#isUpdateImage = true;
   }
 
+  // 動き
+
   changeX(x) {
     this.#setProp('x', this.#current.x + x);
   }
@@ -92,20 +96,22 @@ export default class Clone {
     this.#setProp('y', y);
   }
 
-  changeSize(s) {
-    this.#setProp('size', this.#current.size + s);
-  }
-
-  setSize(s) {
-    this.#setProp('size', s);
-  }
-
   setDeg(deg) {
     this.#setProp('deg', deg);
   }
 
   turn(deg) {
     this.#setProp('deg', this.#current.deg + deg);
+  }
+
+  // 見た目
+
+  changeSize(s) {
+    this.#setProp('size', this.#current.size + s);
+  }
+
+  setSize(s) {
+    this.#setProp('size', s);
   }
 
   show() {
@@ -116,9 +122,20 @@ export default class Clone {
     this.#setProp('isShow', false);
   }
 
+  setGhost(num) { // これ以外に実装できる画像効果ない
+    const safeNum = num > 100 ? 100 : num < 0 ? 0 : num;
+    this.#setProp('ghost', safeNum);
+  }
+
+  changeGhost(num) { // あれ、こう実装するつもりは...
+    const afterNum = this.#current.ghost + num;
+    const safeNum = afterNum > 100 ? 100 : afterNum < 0 ? 0 : afterNum;
+    this.#setProp('ghost', safeNum);
+  }
+
   /**
    * #currentの値を変更する
-   * @param {'x' | 'y' | 'size' | 'deg' | 'isShow'} prop 
+   * @param {'x' | 'y' | 'size' | 'deg' | 'isShow ' | 'ghost'} prop 
    * @param {number | boolean} value 
    */
   #setProp(prop, value) {
