@@ -14,11 +14,15 @@ export default class CloneId {
    * @param {HTMLElement} costume コスチューム
    * @param {(clone: Clone) => Promise<void>} block クローン時に実行される関数
    */
-  constructor(cloneId, costume, block) {
+  constructor(cloneId, costume, canvasSize, block) {
     this.id = cloneId;
     this.costume = costume;
     this.block = block;
-    this.size.w = costume.clientWidth || parseFloat(costume.style.width.replace('px', ''));
-    this.size.h = costume.clientHeight || parseFloat(costume.style.height.replace('px', ''));
+
+    // キャンバスの幅より超えていたらキャンバスの幅にする
+    const w = costume.clientWidth || parseFloat(costume.style.width.replace('px', ''));
+    const h = costume.clientHeight || parseFloat(costume.style.height.replace('px', ''));
+    this.size.w = w > canvasSize.w ? canvasSize.w : w;
+    this.size.h = h > canvasSize.h ? canvasSize.h : h;
   }
 }

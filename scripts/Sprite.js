@@ -16,6 +16,13 @@ export default class Sprite {
    * @param {(sprite: Sprite, args: {event: Event}) => Promise<void>} main flag時に実行される関数
    */
   constructor (canvas, main) {
+    if(!(canvas instanceof HTMLCanvasElement)) {
+      throw new TypeError('new Sprite()の第一引数はHTMLCanvasElementにしてください');
+    }
+    if(typeof main !== 'function') {
+      throw new TypeError('new Sprite()の第二引数は関数にしてください');
+    }
+
     if(Sprite.#alreadyCreate) throw new Error('スプライトは一つまでです。すみません。');
     Sprite.#alreadyCreate = true;
     
@@ -33,7 +40,11 @@ export default class Sprite {
    * @param {(clone: Clone, args: {sprite: Sprite, event: Event}) => Promise<void>} block クローン時に実行される関数
    */
   whenClone(cloneId, costume, block) {
-    const cloneIdObj = new CloneId(cloneId, costume, block);
+    if(!(costume instanceof HTMLElement)) throw new TypeError('costumeはHTMLElementにしてください');
+    if(typeof block !== 'function') throw new TypeError('blockは関数にしてください');
+
+    const canvasSize = {w: this.canvas.width, h: this.canvas.height};
+    const cloneIdObj = new CloneId(cloneId, costume, canvasSize, block);
     this.#cloneIds.push(cloneIdObj);
   }
 
