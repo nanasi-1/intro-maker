@@ -41,16 +41,21 @@ export default class Sprite {
    */
   whenClone(cloneId, costume, block) {
     if(!(costume instanceof HTMLElement)) throw new TypeError('costumeはHTMLElementにしてください');
-    if(typeof block !== 'function') throw new TypeError('blockは関数にしてください');
+    const func = typeof block === 'function' ? block : () => {};
 
     const canvasSize = {w: this.canvas.width, h: this.canvas.height};
-    const cloneIdObj = new CloneId(cloneId, costume, canvasSize, block);
+    const cloneIdObj = new CloneId(cloneId, costume, canvasSize, func);
     this.#cloneIds.push(cloneIdObj);
   }
 
-  createClone(cloneId) {
+  /**
+   * クローンを作成する。Spriteのコンストラクタの中で使う
+   * @param {string} cloneId 登録したクローンID
+   * @param {any} custom 自由に使える値
+   */
+  createClone(cloneId, custom) {
     const id = this.#getCloneId(cloneId);
-    const clone = new Clone(id.costume, this, id.size);
+    const clone = new Clone(id.costume, {sprite: this, size: id.size, custom});
     this.#clones.push(clone);
     this._render();
 

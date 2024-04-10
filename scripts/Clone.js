@@ -4,6 +4,7 @@ export default class Clone {
   #sprite;
   #elem;
   #img = null;
+  custom;
 
   #current = {
     x: 0, 
@@ -20,14 +21,16 @@ export default class Clone {
 
   /**
    * @param {HTMLElement} elem 
+   * @param {{size: {w: number, h: number}, sprite: Sprite, custom?: any}} args 
    * @param {Sprite} sprite 
    * @param {{w: number, h: number}} size クローンのサイズ
    */
-  constructor (elem, sprite, size) {
-    this.#sprite = sprite;
+  constructor (elem, args) {
+    this.#sprite = args.sprite;
     this.#elem = elem;
-    this.#size.w = size.w;
-    this.#size.h = size.h;
+    this.#size.w = args.size.w;
+    this.#size.h = args.size.h;
+    this.custom = args.custom ?? undefined;
   }
 
   /** 
