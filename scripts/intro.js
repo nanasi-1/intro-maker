@@ -1,16 +1,8 @@
-import { sleep } from "./util.js";
+import { sleep, getCostumeElements } from "./util.js";
 import Sprite from "./Sprite.js";
 console.log('Hello World!');
 
 const costumeElem = document.getElementById('costume');
-const getCostumeElements = async (costumeElem) => {
-  /** @type {{[key: string]: HTMLElement}} */ const costumes = {};
-  for (const elem of costumeElem.children) {
-    costumes[elem.id] = elem;
-  }
-  return costumes;
-}
-
 const canvas = document.getElementById('root');
 const sprite = new Sprite(canvas, async (control, {event}) => {
   // 背景
