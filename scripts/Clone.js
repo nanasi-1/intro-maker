@@ -14,7 +14,8 @@ export default class Clone {
     isShow: true,
     ghost: 0 // 透明度
   };
-  #isUpdateImage = false;
+  /** @type {'no-started' | 'progress' | 'done'} */
+  #imgStatus = 'no-started';
   #size = {
     w: 0,
     h: 0,
@@ -40,7 +41,8 @@ export default class Clone {
    */
   async _render(ctx) {
     if(!this.#current.isShow) return;
-    if(!this.#isUpdateImage) await this.#updateImage();
+    if(this.#imgStatus === 'no-started') await this.#updateImage();
+    if(this.#imgStatus === 'progress') return;
     ctx.save();
     const radio = this.#current.size / 100;
     const {x: currentX, y: currentY} = this._calcCoordinate(this.#current.x, -this.#current.y, this.#current.deg);
@@ -67,10 +69,11 @@ export default class Clone {
 
   /** 画像を更新 */
   async #updateImage() {
+    this.#imgStatus = 'progress';
     const img = new Image();
     img.src = await domtoimage.toSvg(this.#elem);
     this.#img = img;
-    this.#isUpdateImage = true;
+    this.#imgStatus = 'done';
   }
 
   // 動き
@@ -188,7 +191,7 @@ export default class Clone {
    */
   setStyle(prop, value) {
     this.#elem.style[prop] = value;
-    this.#isUpdateImage = false;
+    this.#imgStatus = false;
     this.#sprite._render();
   }
 }
