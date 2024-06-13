@@ -191,7 +191,7 @@ export default class Clone {
    */
   setStyle(prop, value) {
     this.#elem.style[prop] = value;
-    this.#imgStatus = false;
+    this.#imgStatus = 'no-started';
     this.#sprite._render();
   }
 }
