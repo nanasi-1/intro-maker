@@ -194,4 +194,21 @@ export default class Clone {
     this.#imgStatus = 'no-started';
     this.#sprite._render();
   }
+
+  // 自身の情報のゲッター群
+  get x() {
+    return this.#current.x
+  }
+
+  get y() {
+    return this.#current.y
+  }
+
+  get deg() {
+    return this.#current.deg
+  }
+
+  get size() {
+    return this.#current.size
+  }
 }
